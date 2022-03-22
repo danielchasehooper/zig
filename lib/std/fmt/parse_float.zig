@@ -19,18 +19,6 @@
 const std = @import("std");
 const ascii = std.ascii;
 
-fn caseInEql(a: []const u8, b: []const u8) bool {
-    if (a.len != b.len) return false;
-
-    for (a) |_, i| {
-        if (ascii.toUpper(a[i]) != ascii.toUpper(b[i])) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 pub const ParseFloatError = error{InvalidCharacter};
 
 //
@@ -53,11 +41,11 @@ fn pow10(E_arg: u32) f128 {
 pub fn parseFloat(comptime T: type, str: []const u8) !T {
     if (str.len == 0) return error.InvalidCharacter;
 
-    if (caseInEql(str, "nan")) {
+    if (ascii.eqlIgnoreCase(str, "nan")) {
         return std.math.nan(T);
-    } else if (caseInEql(str, "inf") or caseInEql(str, "+inf")) {
+    } else if (ascii.eqlIgnoreCase(str, "inf") or ascii.eqlIgnoreCase(str, "+inf")) {
         return std.math.inf(T);
-    } else if (caseInEql(str, "-inf")) {
+    } else if (ascii.eqlIgnoreCase(str, "-inf")) {
         return -std.math.inf(T);
     }
 
